@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +6,9 @@ public class InputManager : MonoBehaviour
     private PlayerInputActions _playerInputActions;
     private Vector2 _moveInput;
     private bool _isSprinting;
+
+    public Vector2 MoveInput => _moveInput;
+    public bool IsSprinting => _isSprinting;
 
     void Awake()
     {
