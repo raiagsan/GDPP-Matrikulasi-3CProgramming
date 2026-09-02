@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using NUnit.Framework;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -15,13 +18,34 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Jump")]
     [SerializeField] private float _jumpForce = 5f;
 
+    [Header("Ground Check")]
+    [SerializeField] private Transform _groundDetector;
+    [SerializeField] private float _detectorRadius;
+    [SerializeField] private LayerMask _groundLayer;
+    private bool _isGrounded;
+
+    [Header("Player Ladder Movement")]
+    [SerializeField] private Vector3 _upperStepOffset;
+    [SerializeField] private float _stepCheckerDistance;
+    [SerializeField] private float _stepForce;
+
+    
+
+
     private float _speed;
     private Rigidbody _rigidbody;
+
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _speed = _walkSpeed;
+    }
+
+    void Update()
+    {
+        CheckIsGrounded();
+        CheckStep();
     }
 
     void FixedUpdate()
@@ -83,7 +107,25 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        Vector3 jumpDirection = Vector3.up;
-        _rigidbody.AddForce((jumpDirection * _jumpForce), ForceMode.Impulse);
+        if (_isGrounded){
+            Vector3 jumpDirection = Vector3.up;
+            _rigidbody.AddForce((jumpDirection * _jumpForce), ForceMode.Impulse);
+        }
+    }
+
+    private void CheckIsGrounded()
+    {
+        _isGrounded = Physics.CheckSphere(_groundDetector.position, _detectorRadius, _groundLayer);
+    }
+
+    private void CheckStep()
+    {
+        bool isHitLowerStep = Physics.Raycast(_groundDetector.position, transform.forward, _stepCheckerDistance);
+        bool isHitUpperStep = Physics.Raycast(_groundDetector.position + _upperStepOffset, transform.forward, _stepCheckerDistance);
+
+        if (isHitLowerStep && !isHitUpperStep)
+        {
+            _rigidbody.AddForce(0f, _stepForce, 0f);
+        }
     }
 }
