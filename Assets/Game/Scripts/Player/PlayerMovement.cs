@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -13,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _sprintSpeed = 5f;
     [SerializeField] private float _walkSprintTransition;
 
+    [Header("Player Jump")]
+    [SerializeField] private float _jumpForce = 5f;
+
     private float _speed;
     private Rigidbody _rigidbody;
 
@@ -26,6 +28,16 @@ public class PlayerMovement : MonoBehaviour
     {
         Sprint();
         Move();
+    }
+
+    void OnEnable()
+    {
+        _inputManager.OnJumpTriggered += Jump;
+    }
+
+    void OnDisable()
+    {
+        _inputManager.OnJumpTriggered -= Jump;
     }
 
     private void Move()
@@ -67,5 +79,11 @@ public class PlayerMovement : MonoBehaviour
                 _speed = _speed - +_walkSprintTransition * Time.fixedDeltaTime;
             }
         }
+    }
+
+    private void Jump()
+    {
+        Vector3 jumpDirection = Vector3.up;
+        _rigidbody.AddForce((jumpDirection * _jumpForce), ForceMode.Impulse);
     }
 }

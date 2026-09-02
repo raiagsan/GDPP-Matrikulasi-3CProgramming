@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,8 @@ public class InputManager : MonoBehaviour
 
     public Vector2 MoveInput => _moveInput;
     public bool IsSprinting => _isSprinting;
+
+    public event Action OnJumpTriggered;
 
     void Awake()
     {
@@ -67,7 +70,11 @@ public class InputManager : MonoBehaviour
         Debug.Log("Not Sprinting");
     }
 
-    void OnJump(InputAction.CallbackContext context){Debug.Log("Jump");}
+    void OnJump(InputAction.CallbackContext context)
+    {
+        Debug.Log("Jump");
+        OnJumpTriggered?.Invoke();
+    }
 
     void OnCrouch(InputAction.CallbackContext context){Debug.Log("Crouch");}
 
