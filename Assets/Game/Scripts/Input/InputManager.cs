@@ -12,6 +12,8 @@ public class InputManager : MonoBehaviour
     public bool IsSprinting => _isSprinting;
 
     public event Action OnJumpTriggered;
+    public event Action OnClimbTriggered;
+    public event Action OnCancelClimborGlideTriggered;
 
     void Awake()
     {
@@ -76,15 +78,24 @@ public class InputManager : MonoBehaviour
         OnJumpTriggered?.Invoke();
     }
 
+
     void OnCrouch(InputAction.CallbackContext context){Debug.Log("Crouch");}
 
     void OnChangePOV(InputAction.CallbackContext context){Debug.Log("Change POV");}
 
     void OnGlide(InputAction.CallbackContext context){Debug.Log("Glide");}
 
-    void OnClimb(InputAction.CallbackContext context){Debug.Log("Climb");}
+    void OnClimb(InputAction.CallbackContext context)
+    {
+        Debug.Log("Climb");
+        OnClimbTriggered?.Invoke();
+    }
 
-    void OnCancelClimborGlide(InputAction.CallbackContext context){Debug.Log("Cancel climb/glide");}
+    void OnCancelClimborGlide(InputAction.CallbackContext context)
+    {
+        Debug.Log("Cancel climb/glide");
+        OnCancelClimborGlideTriggered?.Invoke();
+    }
 
     void OnPunch(InputAction.CallbackContext context){Debug.Log("Punch");}
 
