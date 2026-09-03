@@ -33,6 +33,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector3 _climbOffset;
     [SerializeField] private float _climbSpeed;
 
+    [Header("Camera")]
+    [SerializeField] private Transform _cameraTransform;
+
     private float _speed;
     private Rigidbody _rigidbody;
     private PlayerStance _playerStance;
@@ -43,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _playerStance = PlayerStance.Stand;
         _speed = _walkSpeed;
+        HideAndLockCursor();
+        
     }
 
     void Update()
@@ -55,6 +60,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Sprint();
         Move();
+    }
+
+    void HideAndLockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void OnEnable()
@@ -80,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (isPlayerStanding){
             if (input.magnitude >= 0.1) {
-                float rotationAngle = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg;
+                float rotationAngle = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
                 float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle, ref _rotationSmoothVelocity, _rotationSmoothTime);
                 transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
                 movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
