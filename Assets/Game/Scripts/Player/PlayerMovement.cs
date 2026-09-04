@@ -8,11 +8,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _rotationSmoothTime = 0.1f;
     private float _rotationSmoothVelocity;
 
-    [Header("Player Sprint")]
+    [Header("Sprint")]
     [SerializeField] private float _sprintSpeed = 5f;
     [SerializeField] private float _walkSprintTransition;
 
-    [Header("Player Jump")]
+    [Header("Jump")]
     [SerializeField] private float _jumpForce = 5f;
 
     [Header("Ground Check")]
@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     private bool _isGrounded;
 
-    [Header("Player Ladder Movement")]
+    [Header("Ladder Movement")]
     [SerializeField] private Vector3 _upperStepOffset;
     [SerializeField] private float _stepCheckerDistance;
     [SerializeField] private float _stepForce;
@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private CameraManager _cameraManager;
 
     private float _speed;
     private Rigidbody _rigidbody;
@@ -89,23 +90,37 @@ public class PlayerMovement : MonoBehaviour
         bool isPlayerStanding = _playerStance == PlayerStance.Stand;
         bool isPlayerClimbing = _playerStance == PlayerStance.Climb;
 
-        if (isPlayerStanding){
-            if (input.magnitude >= 0.1) {
-                float rotationAngle = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
-                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle, ref _rotationSmoothVelocity, _rotationSmoothTime);
-                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-                movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
-
-                float targetX = movementDirection.x * _speed;
-                float targetZ = movementDirection.z * _speed;
-
-                _rigidbody.linearVelocity = new Vector3(targetX, _rigidbody.linearVelocity.y, targetZ);
-            }
-            else
+        if (isPlayerStanding)
+        {
+            switch (_cameraManager.CameraState)
             {
-                _rigidbody.linearVelocity = new Vector3(0f, _rigidbody.linearVelocity.y, 0f);
+                case CameraState.ThirdPersonCamera:
+                    if (input.magnitude >= 0.1) {
+                        float rotationAngle = Mathf.Atan2(input.x, input.y) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
+                        float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle, ref _rotationSmoothVelocity, _rotationSmoothTime);
+                        transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+                        movementDirection = (Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward).normalized;
+
+                        _rigidbody.linearVelocity = new Vector3(movementDirection.x * _speed, _rigidbody.linearVelocity.y, movementDirection.z * _speed);
+                    }
+                    else
+                    {
+                        _rigidbody.linearVelocity = new Vector3(0f, _rigidbody.linearVelocity.y, 0f);
+                    }
+                    break;
+                case CameraState.FirstPersonCamera:
+                    transform.rotation = Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f);
+                    Vector3 verticalDirection = input.y * transform.forward;
+                    Vector3 horizontalDirection = input.x * transform.right;
+                    movementDirection = (verticalDirection + horizontalDirection).normalized;
+
+                    _rigidbody.linearVelocity = new Vector3 (movementDirection.x * _speed, _rigidbody.linearVelocity.y, movementDirection.z * _speed);
+                    break;
+                default:
+                    break;
             }
-        }else if (isPlayerClimbing)
+        }
+        else if (isPlayerClimbing)
         {
             Vector3 horizontal = input.x * transform.right;
             Vector3 vertical = input.y * transform.up;
@@ -169,6 +184,8 @@ public class PlayerMovement : MonoBehaviour
             transform.position = hit.point - offset;
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
+            _speed = _climbSpeed;
+            _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
         }
     }
 
@@ -181,6 +198,8 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Stand;
             _rigidbody.useGravity = true;
             transform.position -= transform.forward * 1f;
+            _speed = _walkSpeed;
+            _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
         }
     }
 }
