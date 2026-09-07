@@ -1,5 +1,4 @@
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
@@ -17,6 +16,11 @@ public class CameraManager : MonoBehaviour
     void OnDisable()
     {
         _inputManager.OnChangePOVTriggered -= SwitchCamera;
+    }
+
+    public void SetTPSFieldOfView(float fieldOfView)
+    {
+        _tpsCamera.Lens.FieldOfView = fieldOfView;    
     }
 
     public void SetFPSClampedCamera(bool isClamped, Vector3 playerRotation)
