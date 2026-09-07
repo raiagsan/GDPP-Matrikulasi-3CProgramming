@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CinemachinePanTilt _fpsCamera;
     [SerializeField] private CinemachineCamera _tpsCamera;
     [SerializeField] private InputManager _inputManager;
+
+    public Action OnChangePerspective;
 
     void OnEnable()
     {
@@ -43,17 +46,19 @@ public class CameraManager : MonoBehaviour
 
     public void SwitchCamera()
     {
+        OnChangePerspective();
         if (CameraState == CameraState.FirstPersonCamera)
         {
             CameraState = CameraState.ThirdPersonCamera;
             _fpsCamera.gameObject.SetActive(false);
             _tpsCamera.gameObject.SetActive(true);
+
         }
         else
         {
             CameraState = CameraState.FirstPersonCamera;
             _tpsCamera.gameObject.SetActive(false);
-            _fpsCamera.gameObject.SetActive(true);    
+            _fpsCamera.gameObject.SetActive(true);
         }
     }
 }

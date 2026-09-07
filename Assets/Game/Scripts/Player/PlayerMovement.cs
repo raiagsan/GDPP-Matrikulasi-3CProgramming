@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -40,11 +41,13 @@ public class PlayerMovement : MonoBehaviour
     private float _speed;
     private Rigidbody _rigidbody;
     private PlayerStance _playerStance;
+    private Animator _animator;
 
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponent<Animator>();
         _playerStance = PlayerStance.Stand;
         _speed = _walkSpeed;
         HideAndLockCursor();
@@ -74,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnJumpTriggered += Jump;
         _inputManager.OnClimbTriggered += StartClimb;
         _inputManager.OnCancelClimborGlideTriggered += CancelClimb;
+        _cameraManager.OnChangePerspective += ChangePerspective;
     }
 
     void OnDisable()
@@ -81,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnJumpTriggered -= Jump;
         _inputManager.OnClimbTriggered -= StartClimb;
         _inputManager.OnCancelClimborGlideTriggered -= CancelClimb;
+        _cameraManager.OnChangePerspective -= ChangePerspective;
     }
 
     private void Move()
@@ -119,6 +124,10 @@ public class PlayerMovement : MonoBehaviour
                 default:
                     break;
             }
+            Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, 0f, _rigidbody.linearVelocity.z);
+            _animator.SetFloat("Velocity", velocity.magnitude * input.magnitude, 0.1f, Time.fixedDeltaTime);
+            _animator.SetFloat("VelocityX", velocity.magnitude * input.x, 0.1f, Time.fixedDeltaTime);
+            _animator.SetFloat("VelocityZ", velocity.magnitude * input.y, 0.1f, Time.fixedDeltaTime);
         }
         else if (isPlayerClimbing)
         {
@@ -203,5 +212,10 @@ public class PlayerMovement : MonoBehaviour
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
             _cameraManager.SetTPSFieldOfView(40f);
         }
+    }
+
+    private void ChangePerspective()
+    {
+        _animator.SetTrigger("ChangePerspective");
     }
 }

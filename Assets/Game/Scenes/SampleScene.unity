@@ -942,6 +942,7 @@ MonoBehaviour:
   _fpsCamera: {fileID: 423125292}
   _tpsCamera: {fileID: 231291402}
   _inputManager: {fileID: 1555302893}
+  _switchPerspectiveAnimator: {fileID: 7653531703537761678}
 --- !u!4 &981832037
 Transform:
   m_ObjectHideFlags: 0
@@ -8078,6 +8079,7 @@ GameObject:
   - component: {fileID: 7653531703537761676}
   - component: {fileID: 7653531703537761675}
   - component: {fileID: 7653531703537761677}
+  - component: {fileID: 7653531703537761678}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -8945,8 +8947,8 @@ MonoBehaviour:
   _walkSpeed: 2
   _inputManager: {fileID: 1555302893}
   _rotationSmoothTime: 0.1
-  _sprintSpeed: 5
-  _walkSprintTransition: 7
+  _sprintSpeed: 4
+  _walkSprintTransition: 6
   _jumpForce: 4.2
   _groundDetector: {fileID: 1576974451}
   _detectorRadius: 0.2
@@ -8965,6 +8967,28 @@ MonoBehaviour:
   _climbSpeed: 2
   _cameraTransform: {fileID: 330585546}
   _cameraManager: {fileID: 981832036}
+--- !u!95 &7653531703537761678
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024804135215998768}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9f7805d3e44a20047a51dc9ef34783bb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!23 &7665536516281291699
 MeshRenderer:
   m_ObjectHideFlags: 0
