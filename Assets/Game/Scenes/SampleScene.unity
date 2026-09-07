@@ -942,7 +942,6 @@ MonoBehaviour:
   _fpsCamera: {fileID: 423125292}
   _tpsCamera: {fileID: 231291402}
   _inputManager: {fileID: 1555302893}
-  _switchPerspectiveAnimator: {fileID: 7653531703537761678}
 --- !u!4 &981832037
 Transform:
   m_ObjectHideFlags: 0
@@ -8949,9 +8948,9 @@ MonoBehaviour:
   _rotationSmoothTime: 0.1
   _sprintSpeed: 4
   _walkSprintTransition: 6
-  _jumpForce: 4.2
+  _jumpForce: 6
   _groundDetector: {fileID: 1576974451}
-  _detectorRadius: 0.2
+  _detectorRadius: 0.4
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64

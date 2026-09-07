@@ -56,7 +56,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        CheckIsGrounded();
         CheckStep();
     }
 
@@ -64,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Sprint();
         Move();
+        CheckIsGrounded();
     }
 
     void HideAndLockCursor()
@@ -163,12 +163,14 @@ public class PlayerMovement : MonoBehaviour
         if (_isGrounded){
             Vector3 jumpDirection = Vector3.up;
             _rigidbody.AddForce((jumpDirection * _jumpForce), ForceMode.Impulse);
+            _animator.SetTrigger("Jump");
         }
     }
 
     private void CheckIsGrounded()
     {
         _isGrounded = Physics.CheckSphere(_groundDetector.position, _detectorRadius, _groundLayer);
+        _animator.SetBool("IsGrounded", _isGrounded);
     }
 
     private void CheckStep()
