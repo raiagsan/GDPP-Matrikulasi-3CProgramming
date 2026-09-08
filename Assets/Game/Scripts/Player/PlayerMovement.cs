@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -299,6 +300,8 @@ public class PlayerMovement : MonoBehaviour
         if (_playerStance != PlayerStance.Glide && !_isGrounded)
         {
             _playerStance = PlayerStance.Glide;
+            _animator.SetBool("IsGliding", true);
+            _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
         }
     }
 
@@ -307,6 +310,8 @@ public class PlayerMovement : MonoBehaviour
         if (_playerStance == PlayerStance.Glide)
         {
             _playerStance = PlayerStance.Stand;
+            _animator.SetBool("IsGliding", false);
+            _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
         }
     }
 }

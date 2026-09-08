@@ -8957,6 +8957,11 @@ MonoBehaviour:
     m_Bits: 128
   _climbOffset: {x: 0, y: 1, z: 0.5}
   _climbSpeed: 0.8
+  _glideSpeed: 20
+  _airDrag: 10
+  _glideRotationSpeed: {x: 20, y: 40, z: 20}
+  _minGlideRotationX: -10
+  _maxGlideRotationX: 14
   _groundDetector: {fileID: 1576974451}
   _detectorRadius: 0.4
   _groundLayer:
