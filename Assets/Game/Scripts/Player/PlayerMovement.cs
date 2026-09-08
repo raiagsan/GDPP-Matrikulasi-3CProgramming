@@ -33,6 +33,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _minGlideRotationX;
     [SerializeField] private float _maxGlideRotationX;
 
+    [Header("Punch")]
+    [SerializeField] private bool _isPunching;
+    [SerializeField] private int _combo;
+
     [Header("Ground Check")]
     [SerializeField] private Transform _groundDetector;
     [SerializeField] private float _detectorRadius;
@@ -92,6 +96,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnCrouchTriggered += Crouch;
         _inputManager.OnGlideTriggered += StartGlide;
         _inputManager.OnCancelGlideTriggered += CancelGlide;
+        _inputManager.OnPunchTriggered += Punch;
         _cameraManager.OnChangePerspective += ChangePerspective;
     }
 
@@ -103,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnCrouchTriggered -= Crouch;
         _inputManager.OnGlideTriggered -= StartGlide;
         _inputManager.OnCancelGlideTriggered -= CancelGlide;
+        _inputManager.OnPunchTriggered -= Punch;
         _cameraManager.OnChangePerspective -= ChangePerspective;
     }
 
@@ -313,5 +319,30 @@ public class PlayerMovement : MonoBehaviour
             _animator.SetBool("IsGliding", false);
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
         }
+    }
+
+    private void Punch()
+    {
+        if (_isPunching != true && _playerStance == PlayerStance.Stand)
+        {
+            _isPunching = true;
+
+            if (_combo < 3)
+            {
+                _combo += 1;
+            }
+            else
+            {
+                _combo = 1;
+            }
+
+            _animator.SetInteger("Combo", _combo);
+            _animator.SetTrigger("Punch");
+        }
+    }
+
+    private void EndPunch()
+    {
+        _isPunching = false;
     }
 }
