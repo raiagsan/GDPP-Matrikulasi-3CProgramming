@@ -1,4 +1,5 @@
-using System.Diagnostics;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Punch")]
     [SerializeField] private bool _isPunching;
     [SerializeField] private int _combo;
+    [SerializeField] private float _resetComboInterval;
 
     [Header("Ground Check")]
     [SerializeField] private Transform _groundDetector;
@@ -57,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStance _playerStance;
     private Animator _animator;
     private CapsuleCollider _collider;
+    private Coroutine _resetCombo;
 
     private void Awake()
     {
@@ -121,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
         bool isPlayerCrouch = _playerStance == PlayerStance.Crouch;
         bool isPlayerGliding = _playerStance == PlayerStance.Glide;
 
-        if (isPlayerStanding || isPlayerCrouch)
+        if ((isPlayerStanding || isPlayerCrouch) && !_isPunching)
         {
             switch (_cameraManager.CameraState)
             {
@@ -249,7 +252,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void CancelClimb()
     {
-        
         if (_playerStance == PlayerStance.Climb)
         {
             _playerStance = PlayerStance.Stand;
@@ -344,5 +346,16 @@ public class PlayerMovement : MonoBehaviour
     private void EndPunch()
     {
         _isPunching = false;
+        if (_resetCombo != null)
+        {
+            StopCoroutine(_resetCombo);
+        }
+        _resetCombo = StartCoroutine(ResetCombo());
+    }
+
+    private IEnumerator ResetCombo()
+    {
+        yield return new WaitForSeconds(_resetComboInterval);
+        _combo = 0;
     }
 }
