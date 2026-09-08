@@ -1,8 +1,7 @@
-using UnityEngine;
-
 public enum PlayerStance
 {
     Stand,
     Climb,
-    Crouch
+    Crouch, 
+    Glide
 }

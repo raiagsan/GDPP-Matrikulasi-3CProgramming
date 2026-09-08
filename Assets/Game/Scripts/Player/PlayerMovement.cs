@@ -1,4 +1,3 @@
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -26,6 +25,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector3 _climbOffset;
     [SerializeField] private float _climbSpeed;
 
+    [Header("Gliding")]
+    [SerializeField] private float _glideSpeed;
+    [SerializeField] private float _airDrag;
+    [SerializeField] private Vector3 _glideRotationSpeed;
+    [SerializeField] private float _minGlideRotationX;
+    [SerializeField] private float _maxGlideRotationX;
+
     [Header("Ground Check")]
     [SerializeField] private Transform _groundDetector;
     [SerializeField] private float _detectorRadius;
@@ -47,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator _animator;
     private CapsuleCollider _collider;
 
-    void Awake()
+    private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
@@ -58,39 +64,44 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
-    void Update()
+    private void Update()
     {
         CheckStep();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         Sprint();
         Move();
         CheckIsGrounded();
+        Glide();
     }
 
-    void HideAndLockCursor()
+    private void HideAndLockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         _inputManager.OnJumpTriggered += Jump;
         _inputManager.OnClimbTriggered += StartClimb;
-        _inputManager.OnCancelClimborGlideTriggered += CancelClimb;
+        _inputManager.OnCancelClimbTriggered += CancelClimb;
         _inputManager.OnCrouchTriggered += Crouch;
+        _inputManager.OnGlideTriggered += StartGlide;
+        _inputManager.OnCancelGlideTriggered += CancelGlide;
         _cameraManager.OnChangePerspective += ChangePerspective;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         _inputManager.OnJumpTriggered -= Jump;
         _inputManager.OnClimbTriggered -= StartClimb;
-        _inputManager.OnCancelClimborGlideTriggered -= CancelClimb;
+        _inputManager.OnCancelClimbTriggered -= CancelClimb;
         _inputManager.OnCrouchTriggered -= Crouch;
+        _inputManager.OnGlideTriggered -= StartGlide;
+        _inputManager.OnCancelGlideTriggered -= CancelGlide;
         _cameraManager.OnChangePerspective -= ChangePerspective;
     }
 
@@ -101,6 +112,7 @@ public class PlayerMovement : MonoBehaviour
         bool isPlayerStanding = _playerStance == PlayerStance.Stand;
         bool isPlayerClimbing = _playerStance == PlayerStance.Climb;
         bool isPlayerCrouch = _playerStance == PlayerStance.Crouch;
+        bool isPlayerGliding = _playerStance == PlayerStance.Glide;
 
         if (isPlayerStanding || isPlayerCrouch)
         {
@@ -147,6 +159,15 @@ public class PlayerMovement : MonoBehaviour
             _animator.SetFloat("ClimbVelocityX", velocity.magnitude * input.x, 0.1f, Time.fixedDeltaTime);
             _animator.SetFloat("ClimbVelocityY", velocity.magnitude * input.y, 0.1f, Time.fixedDeltaTime);
         }
+        else if (isPlayerGliding)
+        {
+            Vector3 rotationDegree = transform.rotation.eulerAngles;
+            rotationDegree.x += _glideRotationSpeed.x * input.y * Time.fixedDeltaTime;
+            rotationDegree.x = Mathf.Clamp(rotationDegree.x, _minGlideRotationX, _maxGlideRotationX);
+            rotationDegree.z += _glideRotationSpeed.z * input.x * Time.fixedDeltaTime;
+            rotationDegree.y += _glideRotationSpeed.y * input.x * Time.fixedDeltaTime;
+            transform.rotation = Quaternion.Euler(rotationDegree);
+        }
     }
 
     private void Sprint()
@@ -182,6 +203,11 @@ public class PlayerMovement : MonoBehaviour
     {
         _isGrounded = Physics.CheckSphere(_groundDetector.position, _detectorRadius, _groundLayer);
         _animator.SetBool("IsGrounded", _isGrounded);
+
+        if (_isGrounded)
+        {
+            CancelGlide();
+        }
     }
 
     private void CheckStep()
@@ -235,7 +261,7 @@ public class PlayerMovement : MonoBehaviour
         _animator.SetTrigger("ChangePerspective");
     }
 
-    public void Crouch()
+    private void Crouch()
     {
         if (_playerStance == PlayerStance.Stand)
         {
@@ -252,6 +278,35 @@ public class PlayerMovement : MonoBehaviour
             _collider.height = 1.8f;
             _collider.center = Vector3.up * 0.9f;
             _speed = _walkSpeed;
+        }
+    }
+
+    private void Glide()
+    {
+        if (_playerStance == PlayerStance.Glide)
+        {
+            Vector3 playerRotation = transform.rotation.eulerAngles;
+            float lift = playerRotation.x;
+            Vector3 upForce = transform.up * (lift + _airDrag);
+            Vector3 forwardForce = transform.forward * _glideSpeed;
+            Vector3 totalForce = upForce + forwardForce;
+            _rigidbody.AddForce(totalForce * Time.fixedDeltaTime);
+        }
+    }
+
+    private void StartGlide()
+    {
+        if (_playerStance != PlayerStance.Glide && !_isGrounded)
+        {
+            _playerStance = PlayerStance.Glide;
+        }
+    }
+
+    private void CancelGlide()
+    {
+        if (_playerStance == PlayerStance.Glide)
+        {
+            _playerStance = PlayerStance.Stand;
         }
     }
 }

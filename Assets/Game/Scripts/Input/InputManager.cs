@@ -10,12 +10,14 @@ public class InputManager : MonoBehaviour
 
     public Vector2 MoveInput => _moveInput;
     public bool IsSprinting => _isSprinting;
-    
+
     public Action OnClimbTriggered;
-    public Action OnCancelClimborGlideTriggered;
+    public Action OnCancelClimbTriggered;
     public Action OnChangePOVTriggered;
     public Action OnCrouchTriggered;
     public Action OnJumpTriggered;
+    public Action OnGlideTriggered;
+    public Action OnCancelGlideTriggered;
 
     void Awake()
     {
@@ -65,48 +67,50 @@ public class InputManager : MonoBehaviour
     void OnSprintPerformed(InputAction.CallbackContext context)
     {
         _isSprinting = true;
-        Debug.Log("Sprinting");
     }
 
     void OnSprintCanceled(InputAction.CallbackContext context)
     {
         _isSprinting = false;
-        Debug.Log("Not Sprinting");
     }
 
     void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump");
         OnJumpTriggered?.Invoke();
     }
 
     void OnCrouch(InputAction.CallbackContext context)
     {
-        Debug.Log("Crouch");
         OnCrouchTriggered?.Invoke();
     }
 
     void OnChangePOV(InputAction.CallbackContext context)
     {
-        Debug.Log("Change POV");
         OnChangePOVTriggered?.Invoke();
     }
 
-    void OnGlide(InputAction.CallbackContext context){Debug.Log("Glide");}
+    void OnGlide(InputAction.CallbackContext context)
+    {
+        OnGlideTriggered?.Invoke();
+    }
 
     void OnClimb(InputAction.CallbackContext context)
     {
-        Debug.Log("Climb");
         OnClimbTriggered?.Invoke();
     }
 
     void OnCancelClimborGlide(InputAction.CallbackContext context)
     {
-        Debug.Log("Cancel climb/glide");
-        OnCancelClimborGlideTriggered?.Invoke();
+        OnCancelClimbTriggered?.Invoke();
+        OnCancelGlideTriggered?.Invoke();
     }
-
-    void OnPunch(InputAction.CallbackContext context){Debug.Log("Punch");}
-
-    void OnPause(InputAction.CallbackContext context){Debug.Log("Pause to main menu");}
+    void OnPunch(InputAction.CallbackContext context)
+    {
+        
+    }
+    
+    void OnPause(InputAction.CallbackContext context)
+    {
+        
+    }
 }
