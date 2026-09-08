@@ -8948,7 +8948,15 @@ MonoBehaviour:
   _rotationSmoothTime: 0.1
   _sprintSpeed: 4
   _walkSprintTransition: 6
-  _jumpForce: 6
+  _jumpForce: 5.5
+  _crouchSpeed: 1
+  _climbDetector: {fileID: 1255395393}
+  _climbCheckDistance: 1
+  _climbableLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  _climbOffset: {x: 0, y: 1, z: 0.85}
+  _climbSpeed: 2
   _groundDetector: {fileID: 1576974451}
   _detectorRadius: 0.4
   _groundLayer:
@@ -8957,16 +8965,8 @@ MonoBehaviour:
   _upperStepOffset: {x: 0, y: 0.3, z: 0.3}
   _stepCheckerDistance: 0.1
   _stepForce: 5
-  _climbDetector: {fileID: 1255395393}
-  _climbCheckDistance: 1
-  _climbableLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  _climbOffset: {x: 0, y: 1, z: 0.85}
-  _climbSpeed: 2
   _cameraTransform: {fileID: 330585546}
   _cameraManager: {fileID: 981832036}
-  _crouchSpeed: 1
 --- !u!95 &7653531703537761678
 Animator:
   serializedVersion: 7

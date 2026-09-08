@@ -10,12 +10,12 @@ public class InputManager : MonoBehaviour
 
     public Vector2 MoveInput => _moveInput;
     public bool IsSprinting => _isSprinting;
-
-    public event Action OnJumpTriggered;
-    public event Action OnClimbTriggered;
-    public event Action OnCancelClimborGlideTriggered;
-    public event Action OnChangePOVTriggered;
-    public event Action OnCrouchTriggered;
+    
+    public Action OnClimbTriggered;
+    public Action OnCancelClimborGlideTriggered;
+    public Action OnChangePOVTriggered;
+    public Action OnCrouchTriggered;
+    public Action OnJumpTriggered;
 
     void Awake()
     {

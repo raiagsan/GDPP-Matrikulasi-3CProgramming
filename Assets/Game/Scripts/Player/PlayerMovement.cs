@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Player Movement")]
+    [Header("Move")]
     [SerializeField] private float _walkSpeed = 3f;
     [SerializeField] private InputManager _inputManager;
     [SerializeField] private float _rotationSmoothTime = 0.1f;
@@ -13,8 +13,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _sprintSpeed = 5f;
     [SerializeField] private float _walkSprintTransition;
 
+    [Header("Crouch")]
+    [SerializeField] private float _crouchSpeed;
+
     [Header("Jump")]
     [SerializeField] private float _jumpForce = 5f;
+
+    [Header("Climb")]
+    [SerializeField] private Transform _climbDetector;
+    [SerializeField] private float _climbCheckDistance;
+    [SerializeField] private LayerMask _climbableLayer;
+    [SerializeField] private Vector3 _climbOffset;
+    [SerializeField] private float _climbSpeed;
 
     [Header("Ground Check")]
     [SerializeField] private Transform _groundDetector;
@@ -27,30 +37,21 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _stepCheckerDistance;
     [SerializeField] private float _stepForce;
 
-    [Header("Player Climb")]
-    [SerializeField] private Transform _climbDetector;
-    [SerializeField] private float _climbCheckDistance;
-    [SerializeField] private LayerMask _climbableLayer;
-    [SerializeField] private Vector3 _climbOffset;
-    [SerializeField] private float _climbSpeed;
-
     [Header("Camera")]
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private CameraManager _cameraManager;
-
-    [Header("Crouch")]
-    [SerializeField] private float _crouchSpeed;
 
     private float _speed;
     private Rigidbody _rigidbody;
     private PlayerStance _playerStance;
     private Animator _animator;
-
+    private CapsuleCollider _collider;
 
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
+        _collider = GetComponent<CapsuleCollider>();
         _playerStance = PlayerStance.Stand;
         _speed = _walkSpeed;
         HideAndLockCursor();
@@ -233,12 +234,16 @@ public class PlayerMovement : MonoBehaviour
         {
             _playerStance = PlayerStance.Crouch;
             _animator.SetBool("IsCrouch", true);
+            _collider.height = 1.3f;
+            _collider.center = Vector3.up * 0.66f;
             _speed = _crouchSpeed;
         }
         else if (_playerStance == PlayerStance.Crouch)
         {
             _playerStance = PlayerStance.Stand;
             _animator.SetBool("IsCrouch", false);
+            _collider.height = 1.8f;
+            _collider.center = Vector3.up * 0.9f;
             _speed = _walkSpeed;
         }
     }
