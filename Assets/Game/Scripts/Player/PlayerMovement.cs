@@ -203,6 +203,7 @@ public class PlayerMovement : MonoBehaviour
         if (isInFrontOfClimbingWall && _isGrounded && isNotClimbing)
         {
             Vector3 offset = (transform.forward * _climbOffset.z) + (Vector3.up * _climbOffset.y);
+            _collider.center = Vector3.up * 1.3f;
             transform.position = hit.point - offset;
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
@@ -219,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
         if (_playerStance == PlayerStance.Climb)
         {
             _playerStance = PlayerStance.Stand;
+            _collider.center = Vector3.up * 0.9f;
             _rigidbody.useGravity = true;
             transform.position -= transform.forward * 1f;
             _animator.SetBool("IsClimbing", false);
