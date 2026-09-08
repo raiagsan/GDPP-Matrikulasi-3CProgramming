@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -44,6 +45,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _detectorRadius;
     [SerializeField] private LayerMask _groundLayer;
     private bool _isGrounded;
+
+    [Header("Hit Detector")]
+    [SerializeField] private Transform _hitDetector;
+    [SerializeField] private float _hitDetectorRadius;
+    [SerializeField] private LayerMask _hitLayer;
 
     [Header("Ladder Movement")]
     [SerializeField] private Vector3 _upperStepOffset;
@@ -357,5 +363,17 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(_resetComboInterval);
         _combo = 0;
+    }
+
+    private void Hit()
+    {
+        Collider[] hitObjects = Physics.OverlapSphere(_hitDetector.position, _hitDetectorRadius, _hitLayer);
+        for (int i = 0; i < hitObjects.Length; i++)
+        {
+            if (hitObjects[i].gameObject != null)
+            {
+                Destroy(hitObjects[i].gameObject);
+            }
+        }
     }
 }
