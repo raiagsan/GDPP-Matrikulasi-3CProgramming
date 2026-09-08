@@ -8966,6 +8966,7 @@ MonoBehaviour:
   _climbSpeed: 2
   _cameraTransform: {fileID: 330585546}
   _cameraManager: {fileID: 981832036}
+  _crouchSpeed: 1
 --- !u!95 &7653531703537761678
 Animator:
   serializedVersion: 7

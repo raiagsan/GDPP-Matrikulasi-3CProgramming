@@ -38,6 +38,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private CameraManager _cameraManager;
 
+    [Header("Crouch")]
+    [SerializeField] private float _crouchSpeed;
+
     private float _speed;
     private Rigidbody _rigidbody;
     private PlayerStance _playerStance;
@@ -77,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnJumpTriggered += Jump;
         _inputManager.OnClimbTriggered += StartClimb;
         _inputManager.OnCancelClimborGlideTriggered += CancelClimb;
+        _inputManager.OnCrouchTriggered += Crouch;
         _cameraManager.OnChangePerspective += ChangePerspective;
     }
 
@@ -85,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
         _inputManager.OnJumpTriggered -= Jump;
         _inputManager.OnClimbTriggered -= StartClimb;
         _inputManager.OnCancelClimborGlideTriggered -= CancelClimb;
+        _inputManager.OnCrouchTriggered -= Crouch;
         _cameraManager.OnChangePerspective -= ChangePerspective;
     }
 
@@ -94,8 +99,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movementDirection = Vector3.zero;
         bool isPlayerStanding = _playerStance == PlayerStance.Stand;
         bool isPlayerClimbing = _playerStance == PlayerStance.Climb;
+        bool isPlayerCrouch = _playerStance == PlayerStance.Crouch;
 
-        if (isPlayerStanding)
+        if (isPlayerStanding || isPlayerCrouch)
         {
             switch (_cameraManager.CameraState)
             {
@@ -219,5 +225,21 @@ public class PlayerMovement : MonoBehaviour
     private void ChangePerspective()
     {
         _animator.SetTrigger("ChangePerspective");
+    }
+
+    public void Crouch()
+    {
+        if (_playerStance == PlayerStance.Stand)
+        {
+            _playerStance = PlayerStance.Crouch;
+            _animator.SetBool("IsCrouch", true);
+            _speed = _crouchSpeed;
+        }
+        else if (_playerStance == PlayerStance.Crouch)
+        {
+            _playerStance = PlayerStance.Stand;
+            _animator.SetBool("IsCrouch", false);
+            _speed = _walkSpeed;
+        }
     }
 }

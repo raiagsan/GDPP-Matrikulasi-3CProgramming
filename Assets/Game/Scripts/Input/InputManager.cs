@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     public event Action OnClimbTriggered;
     public event Action OnCancelClimborGlideTriggered;
     public event Action OnChangePOVTriggered;
+    public event Action OnCrouchTriggered;
 
     void Awake()
     {
@@ -79,7 +80,11 @@ public class InputManager : MonoBehaviour
         OnJumpTriggered?.Invoke();
     }
 
-    void OnCrouch(InputAction.CallbackContext context){Debug.Log("Crouch");}
+    void OnCrouch(InputAction.CallbackContext context)
+    {
+        Debug.Log("Crouch");
+        OnCrouchTriggered?.Invoke();
+    }
 
     void OnChangePOV(InputAction.CallbackContext context)
     {
