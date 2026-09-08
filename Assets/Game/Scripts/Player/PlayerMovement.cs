@@ -142,6 +142,10 @@ public class PlayerMovement : MonoBehaviour
             Vector3 vertical = input.y * transform.up;
             movementDirection = (horizontal + vertical).normalized;
             _rigidbody.linearVelocity = (movementDirection * _climbSpeed);
+
+            Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0f);
+            _animator.SetFloat("ClimbVelocityX", velocity.magnitude * input.x, 0.1f, Time.fixedDeltaTime);
+            _animator.SetFloat("ClimbVelocityY", velocity.magnitude * input.y, 0.1f, Time.fixedDeltaTime);
         }
     }
 
@@ -202,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
             transform.position = hit.point - offset;
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
+            _animator.SetBool("IsClimbing", true);
             _speed = _climbSpeed;
             _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
             _cameraManager.SetTPSFieldOfView(70f);
@@ -210,13 +215,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void CancelClimb()
     {
-        bool isPlayerClimbing = _playerStance == PlayerStance.Climb;
         
-        if (isPlayerClimbing)
+        if (_playerStance == PlayerStance.Climb)
         {
             _playerStance = PlayerStance.Stand;
             _rigidbody.useGravity = true;
             transform.position -= transform.forward * 1f;
+            _animator.SetBool("IsClimbing", false);
             _speed = _walkSpeed;
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
             _cameraManager.SetTPSFieldOfView(40f);

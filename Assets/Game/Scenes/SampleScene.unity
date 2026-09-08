@@ -561,7 +561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 407022274}
   m_Layer: 3
-  m_Name: FisrtPersonCameraPos
+  m_Name: FirstPersonCameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -576,7 +576,7 @@ Transform:
   m_GameObject: {fileID: 407022273}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.2}
+  m_LocalPosition: {x: 0, y: 0, z: 0.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1198,8 +1198,8 @@ Transform:
   m_GameObject: {fileID: 1585383327}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.485346, y: 4.9547715, z: 28.202486}
-  m_LocalScale: {x: 4.5, y: 10, z: 0.5}
+  m_LocalPosition: {x: 13.37, y: 5, z: 28.152258}
+  m_LocalScale: {x: 4.5, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -8948,15 +8948,15 @@ MonoBehaviour:
   _rotationSmoothTime: 0.1
   _sprintSpeed: 4
   _walkSprintTransition: 6
-  _jumpForce: 5.5
   _crouchSpeed: 1
+  _jumpForce: 5.5
   _climbDetector: {fileID: 1255395393}
   _climbCheckDistance: 1
   _climbableLayer:
     serializedVersion: 2
     m_Bits: 128
-  _climbOffset: {x: 0, y: 1, z: 0.85}
-  _climbSpeed: 2
+  _climbOffset: {x: 0, y: 1, z: 0.4}
+  _climbSpeed: 0.8
   _groundDetector: {fileID: 1576974451}
   _detectorRadius: 0.4
   _groundLayer:
