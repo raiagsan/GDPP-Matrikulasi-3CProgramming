@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     public Action OnGlideTriggered;
     public Action OnCancelGlideTriggered;
     public Action OnPunchTriggered;
+    public Action OnPauseTriggered;
 
     void Awake()
     {
@@ -112,6 +113,6 @@ public class InputManager : MonoBehaviour
 
     void OnPause(InputAction.CallbackContext context)
     {
-        
+        OnPauseTriggered?.Invoke();
     }
 }
