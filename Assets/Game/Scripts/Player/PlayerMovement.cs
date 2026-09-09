@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -60,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private CameraManager _cameraManager;
 
+    [SerializeField] private PlayerAudioManager _playerAudioManager;
     private float _speed;
     private Rigidbody _rigidbody;
     private PlayerStance _playerStance;
@@ -161,8 +163,8 @@ public class PlayerMovement : MonoBehaviour
             }
             Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, 0f, _rigidbody.linearVelocity.z);
             _animator.SetFloat("Velocity", velocity.magnitude * input.magnitude, 0.1f, Time.fixedDeltaTime);
-            _animator.SetFloat("VelocityX", velocity.magnitude * input.x, 0.1f, Time.fixedDeltaTime);
-            _animator.SetFloat("VelocityZ", velocity.magnitude * input.y, 0.1f, Time.fixedDeltaTime);
+            _animator.SetFloat("VelocityX", velocity.magnitude * input.x, 0.15f, Time.fixedDeltaTime);
+            _animator.SetFloat("VelocityZ", velocity.magnitude * input.y, 0.15f, Time.fixedDeltaTime);
         }
         else if (isPlayerClimbing)
         {
@@ -172,8 +174,8 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.linearVelocity = (movementDirection * _climbSpeed);
 
             Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0f);
-            _animator.SetFloat("ClimbVelocityX", velocity.magnitude * input.x, 0.1f, Time.fixedDeltaTime);
-            _animator.SetFloat("ClimbVelocityY", velocity.magnitude * input.y, 0.1f, Time.fixedDeltaTime);
+            _animator.SetFloat("ClimbVelocityX", velocity.magnitude * input.x, 0.15f, Time.fixedDeltaTime);
+            _animator.SetFloat("ClimbVelocityY", velocity.magnitude * input.y, 0.15f, Time.fixedDeltaTime);
         }
         else if (isPlayerGliding)
         {
@@ -316,6 +318,7 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Glide;
             _animator.SetBool("IsGliding", true);
             _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
+            _playerAudioManager.PlayGlideSFX();
         }
     }
 
@@ -326,6 +329,7 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Stand;
             _animator.SetBool("IsGliding", false);
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
+            _playerAudioManager.StopGlideSFX();
         }
     }
 
